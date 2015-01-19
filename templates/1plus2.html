@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+
+    <script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+
+
+    <meta charset="UTF-8">
+    <title></title>
+
+<link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel="stylesheet" type="text/css"/>
+
+<link href="{{ url_for('static', filename='css/flat-ui.css') }}" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<center>
+    <strong><p style="font-size:40px;height:52px;margin-top:0px" id="title">Try Try See</p></strong>
+    <p  id="title2" style="height:17px">please click the right button</p>
+    <p id="last_time" style="height:17px;margin-top:0px">700</p>
+    <p  id="best" style="height:17px;margin-top:0px"></p>
+<div id="question" style="font-size:30px;margin-bottom:15px">
+</div>
+
+<div id="button">
+    <button class="b btn btn-embossed btn-danger" style="width:200px"ans="1"><strong>1</strong></button><br><br>
+    <button class="b btn btn-embossed btn-info" style="width:200px"ans="2"><strong>2</strong></button><br><br>
+    <button class="b btn btn-embossed btn-primary" style="width:200px"ans="3"><strong>3</strong></button>
+</div>
+<div id="retry">
+<button class="btn btn-hg btn-warning" style="width:200px">
+  Retry!
+</button>
+</div>
+</center>
+<script>
+
+$("#retry").hide()
+    var timerc=0;//全局时间变量（秒数）
+    var result = 0;
+    var round = 1;
+    var best = 0;
+    var amount = 0;
+    var msg = [];
+    function add(){
+
+        if(timerc < 700){
+            ++timerc;
+
+            $("#last_time").html(parseInt(700-timerc))
+            setTimeout("add()", 1);
+        }
+         else
+        {
+
+
+            $("#title2").html("Sorry but time out")
+            over()
+
+        }
+    };
+     function over(){
+
+        $("#title").html("YOU FAILED")
+        $("#button").hide()
+        $("#retry").show()
+        if(best<round)
+        {
+            best = round
+        }
+        $("#best").html("best score:"+best)
+        $("#last_time").html("your score:"+round)
+        $("#best").show()
+
+    }
+
+    function retry()
+    {
+        $("#button").show()
+            $("#retry").hide()
+            time = 0;
+            round = 0;
+            result = 0;
+            creat_question()
+            $("#last_time").html("700")
+            $("#best").hide()
+            $("#title").hide("Try Try See")
+            $("#title2").hide("please the right button")
+    }
+
+    function creat_amount(){
+        amount = 0
+            if(round<=10)
+            {msg = [2,3]}
+            else if(round>10&&round<=20)
+            {msg = [2,3,4]}
+            else if(round>20&&round<=30)
+            {msg = [3,4]}
+            else if(round>30&&round<=40)
+            {msg = [3,4,5]}
+            else if(round>40&&round<=50)
+            {msg = [4,5]}
+            else
+            {
+                alert("You NB!!!")
+                return
+            }
+            amount = msg[Math.floor(Math.random() * msg.length)]-1;
+
+
+            return amount
+        }
+    function creat_question(){
+        result = 0
+        amount = creat_amount()
+        var num_pool = [1,2,3]
+        var num = num_pool[Math.floor(Math.random() * 3)]
+        var symbol = 0
+        while(true)
+        {
+            $("#question").empty()
+        $("#question").append("<span>"+num+"</span>")
+        result = num
+        for(var i=0;i<=amount-1;i++)
+            {
+                num = num_pool[Math.floor(Math.random() * 3)]
+                if(Math.floor( Math.random() * 2 )==0)
+                    {
+                        symbol = "+"
+                        result = result+num
+                    }
+                else
+                    {
+                        symbol = "-"
+                        result = result-num
+                    }
+                $("#question").append("<span>"+symbol+"</span>")
+                $("#question").append("<span>"+num+"</span>")
+            }
+
+            if([1,2,3].indexOf(result)!=-1)
+            {
+                $("#question").append("<span>=</span>")
+                $("#question").append("<span id='answer'>?</span>")
+                break
+            }
+            $("#question").empty()
+        }
+        $("#result").html(result)//The answer of the math problem
+
+
+    }
+    function next()
+    {
+        timerc = 0
+        round = round+1
+        creat_amount()
+        creat_question()
+
+        add()
+    }
+$(".b").click(function(){
+    you_ans = parseInt($(this).attr("ans"))
+
+    if(you_ans==parseInt(result))
+    {
+
+        next()
+    }
+    else
+    {
+
+        timerc=3000
+
+        $("#title2").html("Are you kidding me?")
+        $("#answer").html("<span style='color:red'>"+you_ans+"</span>")
+        over()
+
+
+
+$("#retry").click(function(){
+
+retry()
+
+})
+
+}
+
+
+})
+creat_question()
+
+//powered by david500834
+</script>
+</body>
+</html>
+
