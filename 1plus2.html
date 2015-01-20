@@ -3,6 +3,7 @@
 <head lang="en">
 
     <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.js"></script>
 
 
 
@@ -45,11 +46,14 @@
 </div>
 <audio id="coin"><source src="music/coin.mp3" type="audio/mp3"></audio>
 <audio id="died"><source src="music/died.mp3" type="audio/mp3"></audio>
+<div style="margin-top:140px" >
+<a href="#" id="tool" data-toggle="tooltip" data-html="true" data-placement="top" title="" data-original-title="点赞狂魔李大猫<br>david500834<br>王小岳<br>wangpuyue07">About Us</a>
+<div>
 </center>
 <script>
 
 
-
+$('#tool').tooltip('hide')
 
 
 
@@ -97,7 +101,9 @@ $("#retry").hide()
         {
             best = round
         }
-        $("#last_time").html("best score:"+best)
+        $("#last_time").html("best score:"+best);
+        //新版微信街口
+        $('title').html('我得了'+round+'分，你敢跟我比么?');
 
 
     }
@@ -203,7 +209,7 @@ $("#retry").hide()
             game = 1;
 
 
-            $("#title").html("Are you kidding me?")
+            $("#title").html("You lost?")
             $("#answer").html("<span style='color:red'>"+you_ans+"</span>")
 
             game_over()
@@ -219,6 +225,42 @@ $("#retry").hide()
 creat_question()
 
 //powered by david500834
+
+    document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+        window.shareData = {
+            "Link": "http://123.57.41.190/1plus2/index.html",
+            "Img_url": "http://y1.ifengimg.com/ifengimcp/pic/20141219/5e7c318dc682b4bfc766_size14_w200_h200.jpg",
+            "Title": "这里是标题",
+            "Content": "这里是内容"
+        };
+        // 发送给好友
+        WeixinJSBridge.on('menu:share:appmessage', function (argv) {
+
+            WeixinJSBridge.invoke('sendAppMessage', {
+                "img_url": window.shareData.Img_url,
+                "img_width": "200",
+                "img_height": "200",
+                "link": window.shareData.Link,
+                "desc": window.shareData.Content,
+                "title": "这里是标题"
+            }, function (res) {
+                _report('send_msg', res.err_msg);
+            })
+        });
+        // 分享到朋友圈
+        WeixinJSBridge.on('menu:share:timeline', function (argv) {
+            WeixinJSBridge.invoke('shareTimeline', {
+                "img_url": window.shareData.Img_url,
+                "img_width": "200",
+                "img_height": "200",
+                "link": window.shareData.Link,
+                "desc": window.shareData.Content,
+                "title": "这里是标题"
+            }, function (res) {
+                _report('timeline', res.err_msg);
+            });
+        });
+    }, false);
 </script>
 </body>
 </html>
