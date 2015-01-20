@@ -2,22 +2,34 @@
 <html>
 <head lang="en">
 
-    <script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+    <script src="js/jquery.js"></script>
+
+
+
+<meta name="viewport" content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no;">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no"><meta name="viewport" content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no;">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+
 
 
     <meta charset="UTF-8">
     <title></title>
 
-<link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel="stylesheet" type="text/css"/>
+<link href="css/bootstrap.css" rel="stylesheet" type="text/css"/>
 
-<link href="{{ url_for('static', filename='css/flat-ui.css') }}" rel="stylesheet" type="text/css"/>
+<link href="css/flat-ui.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <center>
     <strong><p style="font-size:40px;height:52px;margin-top:0px" id="title">Try Try See</p></strong>
     <p  id="title2" style="height:17px">please click the right button</p>
     <p id="last_time" style="height:17px;margin-top:0px">700</p>
-    <p  id="best" style="height:17px;margin-top:0px"></p>
+
+
 <div id="question" style="font-size:30px;margin-bottom:15px">
 </div>
 
@@ -31,8 +43,17 @@
   Retry!
 </button>
 </div>
+<audio id="coin"><source src="music/coin.mp3" type="audio/mp3"></audio>
+<audio id="died"><source src="music/died.mp3" type="audio/mp3"></audio>
 </center>
 <script>
+
+
+
+
+
+
+
 
 $("#retry").hide()
     var timerc=0;//全局时间变量（秒数）
@@ -41,50 +62,59 @@ $("#retry").hide()
     var best = 0;
     var amount = 0;
     var msg = [];
-    function add(){
+    var game = 0;
+
+    function clock_start(){
+        if(game==0){
+
 
         if(timerc < 700){
             ++timerc;
-
-            $("#last_time").html(parseInt(700-timerc))
-            setTimeout("add()", 1);
+            $("#last_time").html(parseInt(700-timerc));
+            setTimeout("clock_start()", 1);
         }
-         else
+        else if(timerc <750&&timerc>=700)
         {
-
-
-            $("#title2").html("Sorry but time out")
-            over()
+            ++timerc;
+            setTimeout("clock_start()", 1);
+        }
+        else
+        {
+            $("#title").html("Sorry but time out")
+            game_over()
+        }
 
         }
     };
-     function over(){
 
-        $("#title").html("YOU FAILED")
+
+
+    function game_over(){
         $("#button").hide()
         $("#retry").show()
+        $('#died')[0].play();
         if(best<round)
         {
             best = round
         }
-        $("#best").html("best score:"+best)
-        $("#last_time").html("your score:"+round)
-        $("#best").show()
+        $("#last_time").html("best score:"+best)
+
 
     }
 
     function retry()
     {
+        game = 0;
         $("#button").show()
-            $("#retry").hide()
+        $("#retry").hide()
             time = 0;
-            round = 0;
+            round = 1;
             result = 0;
             creat_question()
             $("#last_time").html("700")
-            $("#best").hide()
-            $("#title").hide("Try Try See")
-            $("#title2").hide("please the right button")
+
+            $("#title").html("Try Try See")
+            $("#title2").html("please the right button")
     }
 
     function creat_amount(){
@@ -145,7 +175,7 @@ $("#retry").hide()
             }
             $("#question").empty()
         }
-        $("#result").html(result)//The answer of the math problem
+
 
 
     }
@@ -155,38 +185,37 @@ $("#retry").hide()
         round = round+1
         creat_amount()
         creat_question()
+        $('#coin')[0].play();
+        clock_start()
 
-        add()
+
     }
-$(".b").click(function(){
-    you_ans = parseInt($(this).attr("ans"))
 
-    if(you_ans==parseInt(result))
-    {
-
-        next()
-    }
-    else
-    {
-
-        timerc=3000
-
-        $("#title2").html("Are you kidding me?")
-        $("#answer").html("<span style='color:red'>"+you_ans+"</span>")
-        over()
+    $(".b").click(function(){
+        $("#title2").html("your score:"+round)
+        you_ans = parseInt($(this).attr("ans"))
+        if(you_ans==parseInt(result))
+        {
+            next()
+        }
+        else
+        {
+            game = 1;
 
 
+            $("#title").html("Are you kidding me?")
+            $("#answer").html("<span style='color:red'>"+you_ans+"</span>")
 
-$("#retry").click(function(){
-
-retry()
-
+            game_over()
+        }
 })
 
-}
+    $("#retry").click(function(){
+            retry()
+        })
 
 
-})
+
 creat_question()
 
 //powered by david500834
